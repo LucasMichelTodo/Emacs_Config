@@ -133,3 +133,16 @@
 (require 'smartparens-config)
 (add-hook 'python-mode-hook #'smartparens-mode)
 (add-hook 'R-mode-hook #'smartparens-mode)
+
+
+;; Line wrapping
+;;------------------
+
+(global-visual-line-mode 1)
+
+;; Command sending
+;;----------------
+;;(setq comint-prompt-read-only t)
+;;(setq comint-scroll-to-bottom-on-input t)
+;;(setq comint-scroll-to-bottom-on-output t)
+;;(setq comint-move-point-for-output t)
