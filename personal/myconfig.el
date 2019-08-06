@@ -152,3 +152,5 @@
 
 ;; Make file refresh at checkout
 (global-auto-revert-mode t)
+
+;; Just a test
