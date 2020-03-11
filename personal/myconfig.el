@@ -1,5 +1,12 @@
 ;; GLOBAL
 
+;; Multiple Cursors
+(require 'multiple-cursors)
+(global-set-key (kbd "C-S-c C-S-c") 'mc/edit-lines)
+(global-set-key (kbd "C->") 'mc/mark-next-like-this)
+(global-set-key (kbd "C-<") 'mc/mark-previous-like-this)
+(global-set-key (kbd "C-c C-<") 'mc/mark-all-like-this)
+
 ;; Agenda
 ;; The following lines are always needed.  Choose your own keys.
 (global-set-key "\C-cl" 'org-store-link)
@@ -9,7 +16,11 @@
 
 ;; ESS CONFIG
 
+;;(use-package ess
+;; :ensure t
+;; :init (require 'ess-site))
 (require 'package)
+(require 'ess-site)
 (add-to-list 'package-archives '("melpa" . "http://melpa.org/packages/") t)
 (package-initialize)  ;load and activate packages, including auto-complete
 (ac-config-default)
@@ -33,13 +44,12 @@
 ;; ORG MODE CONFIG
 
 (add-hook 'org-mode-hook 'org-indent-mode)
-(setq ess-eval-visibly-p nil)
-(require 'ob-async)
+;;(setq ess-eval-visibly-p nil)
+;;(require 'ob-async)
 (require 'package)
 (require 'ob-ipython)
 (add-to-list 'package-archives '("org" . "https://orgmode.org/elpa/") t)
 (require 'org-tempo)
-(require 'ess-site)
 (add-to-list 'org-src-lang-modes '("dot" . "graphviz-dot"))
 (org-babel-do-load-languages
  'org-babel-load-languages
@@ -59,13 +69,48 @@
 
 (setq org-src-fontify-natively t)
 (setq org-src-tab-acts-natively t)
-(setq org-export-babel-evaluate nil)
 (setq org-confirm-babel-evaluate nil)
-(add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
+
+(setq org-image-actual-width nil)
+;;(add-hook 'org-babel-after-execute-hook 'org-display-inline-images 'append)
+
+;; Code syntax highlighting when exporting to pdf
+
+(require 'org)
+(require 'ox-latex)
+(add-to-list 'org-latex-packages-alist '("" "minted"))
+(setq org-latex-listings 'minted) 
+
+(setq org-latex-pdf-process
+      '("pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"
+        "pdflatex -shell-escape -interaction nonstopmode -output-directory %o %f"))
+
+
+;; ORG-Skeleton
+(define-skeleton org-skeleton
+  "Header info for a emacs-org file."
+  "Title: "
+  
+  "#+STARTUP: hideblocks\n"
+  "#+PROPERTY :cache yes\n"
+  "#+SETUPFILE: /home/lucas/.emacs.d/html_formatting/org-html-themes-master/setup/theme-readtheorg.setup\n"
+  "#+OPTIONS: ^:{}\n"
+  "#+TITLE:" str  " \n"
+  "#+AUTHOR: Lucas Michel Todó\n"
+  "#+EMAIL:  lucas.michel@isglobal.org\n"
+  )
+(global-set-key [C-S-f4] 'org-skeleton)
+
+;; HTML EXPORT
+
+(require 'htmlize)
+(setq org-src-preserve-indentation t)
+(setq org-hide-emphasis-markers t)
 
 ;; ADD LINENUMBERS
 
-(global-linum-mode t)
+(global-nlinum-mode t)
 (set-face-foreground 'linum "gainsboro")
 
 ;; PYTHON IDE
@@ -113,6 +158,9 @@
       python-shell-interpreter-args "-i --simple-prompt")
 
 (add-to-list 'company-backends 'company-ob-ipython)
+(setq python-indent-guess-indent-offset nil)
+
+(setenv "WORKON_HOME" "/home/lucas/anaconda3/envs/")
 
 ;; CONFIGURE WINDMOVE ;;
 
@@ -124,7 +172,7 @@
 (require 'helm-config)
 (helm-mode 1)
 (global-set-key (kbd "M-x") 'helm-M-x)
-(global-set-key (kbd "C-x C-f") 'helm-find-files)
+;;(global-set-key (kbd "C-x C-f") 'helm-find-files)
 
 
 ;; Parenthesis Pairing
@@ -152,5 +200,3 @@
 
 ;; Make file refresh at checkout
 (global-auto-revert-mode t)
-
-;; Just a test
